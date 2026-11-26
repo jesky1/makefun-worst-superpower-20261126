@@ -1,0 +1,1 @@
+{"description":"One useless superpower in one line for make.fun: the exact weight of any cloud, to three decimal places — nobody has ever asked","license":"MIT","name":"makefun-worst-superpower-20261126","private":true,"scripts":{"start":"node main.ts","test":"node --test main.test.ts"},"type":"module","version":"1.0.0"}
