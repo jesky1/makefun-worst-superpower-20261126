@@ -17,7 +17,7 @@ export const LINE =
 // an invalid entry rather than ship a file the judge never sees. Also
 // refuse leading/trailing whitespace — a stray space would count against
 // the 140-character budget and look sloppy on the bounty page.
-if (LINE.length < 1 || LINE.length > 140 || LINE.includes("\n") || LINE !== LINE.trim()) {
+if (LINE.length < 1 || LINE.length > 140 || LINE.includes("\n") || LINE !== LINE.trim() || /[\x00-\x1F\x7F]/.test(LINE)) {
   console.error(`invalid entry: ${LINE.length} chars`);
   process.exit(1);
 }
@@ -25,4 +25,11 @@ if (LINE.length < 1 || LINE.length > 140 || LINE.includes("\n") || LINE !== LINE
 const outDir = process.env.MAKEFUN_OUTPUT_DIR ?? "/output";
 mkdirSync(outDir, { recursive: true });
 writeFileSync(`${outDir}/entry.txt`, LINE, "utf8");
+// Round-trip check: what the judge reads must be byte-identical to LINE,
+// with no trailing newline added by the write.
+import { readFileSync } from "node:fs";
+if (readFileSync(`${outDir}/entry.txt`, "utf8") !== LINE) {
+  console.error("entry.txt round-trip mismatch");
+  process.exit(1);
+}
 console.log(LINE);
